@@ -1,0 +1,2 @@
+Salut {{ name }}
+Votre âge est : {{ age }} ans

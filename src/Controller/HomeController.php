@@ -2,11 +2,13 @@
 
 //namespace HomeController;
 
-class HomeController
+include "./conf/Controller.php";
+
+class HomeController extends Controller
 {
     public function index()
     {
-        return "Vue renvoyée de Home.php";
+        $this->render_view("home.harm", ["name" => "Kevin", "age" => 34]);
     }
 
     public function user()

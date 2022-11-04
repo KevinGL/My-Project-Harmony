@@ -38,13 +38,13 @@ class Controller
                 if($paire == "}}")
                 {
                     $lecture = false;
-                    array_push($listeNomsVar, $nomVar);
+                    array_push($listeNomsVar, $nomVar . "}}");
                     $nomVar = "";
                 }
 
                 if($lecture)
                 {
-                    if($carac != "{" && $carac != " ")
+                    //if($carac != "{" && $carac != " ")
                         $nomVar .= $carac;
                 }
 
@@ -59,14 +59,21 @@ class Controller
 
             foreach($listeNomsVar as $nomVar)
             {
-                if(array_key_exists($nomVar, $variables))
-                    $rendu = str_replace($nomVar, $variables[$nomVar], $rendu);
+                $nomVarRaw = str_replace("{{", "", $nomVar);
+                $nomVarRaw = str_replace("}}", "", $nomVarRaw);
+
+                $nomVarRaw = str_replace(" ", "", $nomVarRaw);
+                
+                if(array_key_exists($nomVarRaw, $variables))
+                {
+                    $rendu = str_replace($nomVar, $variables[$nomVarRaw], $rendu);
+                }
                 else
                     $rendu = str_replace($nomVar, "", $rendu);
             }
 
-            $rendu = str_replace("{{", "", $rendu);
-            $rendu = str_replace("}}", "", $rendu);
+            $rendu = str_replace("{%", "", $rendu);
+            $rendu = str_replace("%}", "", $rendu);
 
             echo $rendu;
         }

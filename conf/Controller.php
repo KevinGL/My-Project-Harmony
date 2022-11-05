@@ -1,5 +1,7 @@
 <?php
 
+require("FunctionsHarm.php");
+
 //namespace Controller;
 
 class Controller
@@ -16,11 +18,14 @@ class Controller
             //var_dump($datas);
 
             $listeNomsVar = [];
+            $listeNomsFonc = [];
 
             $i = 0;
 
-            $lecture = false;
+            $lectureVar = false;
+            $lectureFonc = false;
             $nomVar = "";
+            $nomFonc = "";
 
             while(1)
             {
@@ -31,21 +36,40 @@ class Controller
 
                 if($paire == "{{")
                 {
-                    $lecture = true;
+                    $lectureVar = true;
                 }
 
                 else
                 if($paire == "}}")
                 {
-                    $lecture = false;
+                    $lectureVar = false;
                     array_push($listeNomsVar, $nomVar . "}}");
                     $nomVar = "";
                 }
 
-                if($lecture)
+                if($lectureVar)
                 {
-                    //if($carac != "{" && $carac != " ")
-                        $nomVar .= $carac;
+                    $nomVar .= $carac;
+                }
+
+                ///////////////////////////////////////////////////////////
+
+                if($paire == "{%")
+                {
+                    $lectureFonc = true;
+                }
+
+                else
+                if($paire == "%}")
+                {
+                    $lectureFonc = false;
+                    array_push($listeNomsFonc, $nomFonc . "%}");
+                    $nomFonc = "";
+                }
+
+                if($lectureFonc)
+                {
+                    $nomFonc .= $carac;
                 }
 
                 $i++;
@@ -53,7 +77,7 @@ class Controller
                     break;
             }
 
-            //var_dump($listeNomsVar);
+            //var_dump($listeNomsFonc);
 
             $rendu = $content;
 
@@ -72,8 +96,23 @@ class Controller
                     $rendu = str_replace($nomVar, "", $rendu);
             }
 
-            $rendu = str_replace("{%", "", $rendu);
-            $rendu = str_replace("%}", "", $rendu);
+            foreach($listeNomsFonc as $nomFonc)
+            {
+                $nomFoncRaw = str_replace("{%", "", $nomFonc);
+                $nomFoncRaw = str_replace("%}", "", $nomFoncRaw);
+
+                $nomFoncRaw = str_replace(" ", "", $nomFoncRaw);
+
+                $datasFonc = explode("(", $nomFoncRaw);
+
+                $datasFonc[1] = str_replace(")", "", $datasFonc[1]);
+
+                $newLink = ($datasFonc[0])($datasFonc[1]);
+                    
+                $rendu = str_replace($nomFonc, $newLink, $rendu);
+
+                //var_dump($datasFonc);
+            }
 
             echo $rendu;
         }

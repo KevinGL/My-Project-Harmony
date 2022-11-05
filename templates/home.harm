@@ -2,4 +2,4 @@
 
 <p>Votre age est : {{ age }} ans</p>
 
-<a href="/user|[id:5,name:'Mathieu']">Lien</a>
+<a href={% linkHarm("/user", [id:5, name:'Mathieu']) %}>Lien</a>

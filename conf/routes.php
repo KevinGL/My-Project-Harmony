@@ -2,11 +2,11 @@
 
 session_start();
 
-if(str_contains($_SERVER["REQUEST_URI"], "%7C"))
+if(str_contains($_SERVER["REQUEST_URI"], "?"))
 {
-    $redirect = explode("%7C", $_SERVER["REQUEST_URI"]);
+    $redirect = explode("?", $_SERVER["REQUEST_URI"]);
 
-    $_SESSION["query"] = $redirect[1];
+    $_SESSION["query"] = $_GET;
 
     header("Location: " . $redirect[0]);
 }
@@ -75,22 +75,8 @@ if(!array_key_exists($_SERVER["REQUEST_URI"], $routes))
 
             $body = [];
 
-            $queryRaw = $_SESSION["query"];
-
-            $queryRaw = str_replace("[", "", $queryRaw);
-            $queryRaw = str_replace("]", "", $queryRaw);
-
-            $elements = explode(",", $queryRaw);
-
-            foreach($elements as $el)
-            {
-                $key_value = explode(":", $el);
-
-                $key = $key_value[0];
-                $value = $key_value[1];
-
-                $query[$key] = $value;
-            }
+            if(isset($_SESSION["query"]))
+                $query = $_SESSION["query"];
 
             if(isset($_POST))
                 $body = $_POST;
@@ -136,22 +122,8 @@ else
         if(isset($_POST))
             $body = $_POST;
         
-        $queryRaw = $_SESSION["query"];
-
-        $queryRaw = str_replace("[", "", $queryRaw);
-        $queryRaw = str_replace("]", "", $queryRaw);
-
-        $elements = explode(",", $queryRaw);
-
-        foreach($elements as $el)
-        {
-            $key_value = explode(":", $el);
-
-            $key = $key_value[0];
-            $value = $key_value[1];
-
-            $query[$key] = $value;
-        }
+        if(isset($_SESSION["query"]))
+            $query = $_SESSION["query"];
 
         $req = new Request($method, $query, $body);
 

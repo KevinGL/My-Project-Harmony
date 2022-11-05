@@ -78,4 +78,9 @@ class Controller
             echo $rendu;
         }
     }
+
+    public function render_json($datas)
+    {
+        echo json_encode($datas);
+    }
 }

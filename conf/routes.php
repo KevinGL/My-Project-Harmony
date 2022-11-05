@@ -60,7 +60,12 @@ if(!array_key_exists($_SERVER["REQUEST_URI"], $routes))
 
             $cont = new $controller;
 
-            $req = new Request($method, [], []);
+            $body = [];
+
+            if(isset($_POST))
+                $body = $_POST;
+
+            $req = new Request($method, [], $body);
 
             $view = $cont->{$function}($param, $req);
 
@@ -94,7 +99,12 @@ else
 
         $cont = new $controller;
 
-        $req = new Request($method, [], []);
+        $body = [];
+
+        if(isset($_POST))
+            $body = $_POST;
+
+        $req = new Request($method, [], $body);
 
         $view = $cont->{$function}($req);
 

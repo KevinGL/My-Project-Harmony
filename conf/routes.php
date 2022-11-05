@@ -4,6 +4,8 @@ require("routes/web.php");
 
 //var_dump($_SERVER["REQUEST_URI"]);
 
+$methods = ["GET", "POST"];
+
 if(!array_key_exists($_SERVER["REQUEST_URI"], $routes))
 {
     $keys = array_keys($routes);
@@ -31,21 +33,36 @@ if(!array_key_exists($_SERVER["REQUEST_URI"], $routes))
 
         $controller = $datasRoute[0];
         $function = $datasRoute[1];
+        $method = "GET";
+
+        if(count($datasRoute) == 3 && in_array($datasRoute[2], $methods))
+        {
+            $method = $datasRoute[2];
+
+            if($method != "GET" && $method != "POST")
+                $method = "GET";
+        }
+
+        if($_SERVER["REQUEST_METHOD"] != $method)
+            echo "BAD METHOD !";
         
-        $offset = strrpos($_SERVER["REQUEST_URI"], "/");
+        else
+        {
+            $offset = strrpos($_SERVER["REQUEST_URI"], "/");
 
-        $param = substr($_SERVER["REQUEST_URI"], $offset+1);
+            $param = substr($_SERVER["REQUEST_URI"], $offset+1);
 
-        /*$nomParamInRoute = substr($routeParam, strpos($routeParam, "{")+1);
-        $nomParamInRoute = str_replace("}", "", $nomParamInRoute);*/
+            /*$nomParamInRoute = substr($routeParam, strpos($routeParam, "{")+1);
+            $nomParamInRoute = str_replace("}", "", $nomParamInRoute);*/
 
-        require("src/Controller/" . $controller . ".php");
+            require("src/Controller/" . $controller . ".php");
 
-        $cont = new $controller;
+            $cont = new $controller;
 
-        $view = $cont->{$function}($param);
+            $view = $cont->{$function}($param);
 
-        echo $view;
+            echo $view;
+        }
     }
 }
 
@@ -55,12 +72,27 @@ else
 
     $controller = $datasRoute[0];
     $function = $datasRoute[1];
+    $method = "GET";
 
-    require("src/Controller/" . $controller . ".php");
+    if(count($datasRoute) == 3 && in_array($datasRoute[2], $methods))
+    {
+        $method = $datasRoute[2];
 
-    $cont = new $controller;
+        if($method != "GET" && $method != "POST")
+            $method = "GET";
+    }
 
-    $view = $cont->{$function}();
+    if($_SERVER["REQUEST_METHOD"] != $method)
+        echo "BAD METHOD !";
 
-    echo $view;
+    else
+    {
+        require("src/Controller/" . $controller . ".php");
+
+        $cont = new $controller;
+
+        $view = $cont->{$function}();
+
+        echo $view;
+    }
 }

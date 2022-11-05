@@ -18,6 +18,11 @@ class HomeController extends Controller
 
     public function users($id)
     {
-        return $id;
+        return "Paramètre passé en URL : " . $id;
+    }
+
+    public function login()
+    {
+        return "Login";
     }
 };

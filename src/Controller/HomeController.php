@@ -15,4 +15,9 @@ class HomeController extends Controller
     {
         return "User";
     }
+
+    public function users($id)
+    {
+        return $id;
+    }
 };

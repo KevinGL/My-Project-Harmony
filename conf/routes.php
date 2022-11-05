@@ -2,9 +2,51 @@
 
 require("routes/web.php");
 
+//var_dump($_SERVER["REQUEST_URI"]);
+
 if(!array_key_exists($_SERVER["REQUEST_URI"], $routes))
 {
-    echo 'ERREUR 404';
+    $keys = array_keys($routes);
+
+    $routeParam = "";
+
+    foreach($keys as $key)
+    {
+        if(substr_compare($_SERVER["REQUEST_URI"], $key, 0) == -1 && strpos($key, "{") && strpos($key, "}"))
+        {
+            $routeParam = $key;
+
+            break;
+        }
+    }
+    
+    if($routeParam == "")
+        echo 'ERREUR 404';
+
+    else
+    {
+        //echo $routeParam;
+
+        $datasRoute = explode("::", $routes[$routeParam]);
+
+        $controller = $datasRoute[0];
+        $function = $datasRoute[1];
+        
+        $offset = strrpos($_SERVER["REQUEST_URI"], "/");
+
+        $param = substr($_SERVER["REQUEST_URI"], $offset+1);
+
+        /*$nomParamInRoute = substr($routeParam, strpos($routeParam, "{")+1);
+        $nomParamInRoute = str_replace("}", "", $nomParamInRoute);*/
+
+        require("src/Controller/" . $controller . ".php");
+
+        $cont = new $controller;
+
+        $view = $cont->{$function}($param);
+
+        echo $view;
+    }
 }
 
 else
@@ -14,13 +56,9 @@ else
     $controller = $datasRoute[0];
     $function = $datasRoute[1];
 
-    //var_dump($routes[ $_SERVER["REQUEST_URI"] ]);
-
     require("src/Controller/" . $controller . ".php");
 
     $cont = new $controller;
-
-    //var_dump($cont);
 
     $view = $cont->{$function}();
 

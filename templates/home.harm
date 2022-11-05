@@ -1,3 +1,5 @@
 <h1>Salut {{ name }}</h1>
 
 <p>Votre age est : {{ age }} ans</p>
+
+<a href="/user|[id:5,name:'Mathieu']">Lien</a>

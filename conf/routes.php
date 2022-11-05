@@ -1,5 +1,16 @@
 <?php
 
+session_start();
+
+if(str_contains($_SERVER["REQUEST_URI"], "%7C"))
+{
+    $redirect = explode("%7C", $_SERVER["REQUEST_URI"]);
+
+    $_SESSION["query"] = $redirect[1];
+
+    header("Location: " . $redirect[0]);
+}
+
 require("routes/web.php");
 require("conf/Request.php");
 
@@ -60,12 +71,31 @@ if(!array_key_exists($_SERVER["REQUEST_URI"], $routes))
 
             $cont = new $controller;
 
+            $query = [];
+
             $body = [];
+
+            $queryRaw = $_SESSION["query"];
+
+            $queryRaw = str_replace("[", "", $queryRaw);
+            $queryRaw = str_replace("]", "", $queryRaw);
+
+            $elements = explode(",", $queryRaw);
+
+            foreach($elements as $el)
+            {
+                $key_value = explode(":", $el);
+
+                $key = $key_value[0];
+                $value = $key_value[1];
+
+                $query[$key] = $value;
+            }
 
             if(isset($_POST))
                 $body = $_POST;
 
-            $req = new Request($method, [], $body);
+            $req = new Request($method, $query, $body);
 
             $view = $cont->{$function}($param, $req);
 
@@ -101,10 +131,29 @@ else
 
         $body = [];
 
+        $query = [];
+
         if(isset($_POST))
             $body = $_POST;
+        
+        $queryRaw = $_SESSION["query"];
 
-        $req = new Request($method, [], $body);
+        $queryRaw = str_replace("[", "", $queryRaw);
+        $queryRaw = str_replace("]", "", $queryRaw);
+
+        $elements = explode(",", $queryRaw);
+
+        foreach($elements as $el)
+        {
+            $key_value = explode(":", $el);
+
+            $key = $key_value[0];
+            $value = $key_value[1];
+
+            $query[$key] = $value;
+        }
+
+        $req = new Request($method, $query, $body);
 
         $view = $cont->{$function}($req);
 

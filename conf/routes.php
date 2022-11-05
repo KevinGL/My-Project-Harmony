@@ -1,10 +1,11 @@
 <?php
 
 require("routes/web.php");
+require("conf/Request.php");
 
 //var_dump($_SERVER["REQUEST_URI"]);
 
-$methods = ["GET", "POST"];
+$methods = ["GET", "POST", "PUT", "DELETE"];
 
 if(!array_key_exists($_SERVER["REQUEST_URI"], $routes))
 {
@@ -59,7 +60,9 @@ if(!array_key_exists($_SERVER["REQUEST_URI"], $routes))
 
             $cont = new $controller;
 
-            $view = $cont->{$function}($param);
+            $req = new Request($method, [], []);
+
+            $view = $cont->{$function}($param, $req);
 
             echo $view;
         }
@@ -91,7 +94,9 @@ else
 
         $cont = new $controller;
 
-        $view = $cont->{$function}();
+        $req = new Request($method, [], []);
+
+        $view = $cont->{$function}($req);
 
         echo $view;
     }

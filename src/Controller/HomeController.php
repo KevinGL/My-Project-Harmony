@@ -6,8 +6,10 @@ include "./conf/Controller.php";
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $req)
     {
+        //var_dump($req);
+        
         $this->render_view("home.harm", ["name" => "Kevin", "age" => 34]);
     }
 

@@ -33,19 +33,19 @@ if($env)
                 try
                 {
                     $db = new PDO($server . ':host=' . $host . ';charset=utf8', $user, $pw);
+
+                    if(count($argv) >= 2)
+                    {
+                        $function = explode(":", $argv[1]);
+
+                        $nameFunction = $function[1] . $function[0];
+
+                        ($nameFunction)($db);
+                    }
                 }
                 catch(Exception $e)
                 {
                     echo $e->getMessage();
-                }
-                
-                if(count($argv) >= 2)
-                {
-                    $function = explode(":", $argv[1]);
-
-                    $nameFunction = $function[1] . $function[0];
-
-                    ($nameFunction)($db);
                 }
 
                 break;

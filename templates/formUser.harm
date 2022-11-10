@@ -1,0 +1,10 @@
+<form action="/createuser" method="post">
+    <input type="text" placeholder="Name of user" name="name" />
+    <input type="text" placeholder="Email of user" name="email" />
+    <input type="textarea" placeholder="Description of user" name="description" />
+    <input type="radio" name="admin" value="admin" />
+    Admin
+    <input type="radio" name="admin" value="notadmin" />
+    Non admin
+    <input type="submit" />
+</form>

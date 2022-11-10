@@ -1,7 +1,8 @@
 <?php
 
 $routes = [
-    "/" => "UserController::index::GET",
+    "/formuser" => "UserController::form::GET",
+    "/createuser" => "UserController::createUser::POST",
     "/home" => "HomeController::index::GET",
     "/user" => "HomeController::user::GET",
     "/users/{id}" => "HomeController::users::GET",

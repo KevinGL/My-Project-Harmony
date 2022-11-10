@@ -1,11 +1,31 @@
 <?php
 
-include "../conf/Controller.php";
+include "./conf/Controller.php";
+include "./src/Model/UserModel.php";
 
 class UserController extends Controller
 {
-    public function index()
+    public function form()
     {
-        return("Welcome in Harmony ! :)");
+        $this->render_view("formUser.harm");
+    }
+
+    public function createUser(Request $req)
+    {
+        //var_dump($req->body);
+
+        $user = new UserModel;
+
+        $res = $user->create([
+            "name" => $req->body["name"],
+            "email" => $req->body["email"],
+            "description" => $req->body["description"],
+            "admin" => $req->body["admin"]
+        ]);
+
+        if($res)
+            return "Inscription validée";
+        else
+            return "Une erreur s'est produite";
     }
 };

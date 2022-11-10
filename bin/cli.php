@@ -190,7 +190,8 @@ function createControllerModel($modelName, $fields)
 
     fputs($fileController, "<?php\n\n");
 
-    fputs($fileController, "include \"../conf/Controller.php\";\n\n");
+    fputs($fileController, "include \"./conf/Controller.php\";\n");
+    fputs($fileController, "include \"./src/Model/" . $modelNameCap . "Model.php\";\n\n");
     
     fputs($fileController, "class " . $modelNameCap . "Controller extends Controller\n");
     fputs($fileController, "{\n");
@@ -210,9 +211,7 @@ function createControllerModel($modelName, $fields)
 
     fputs($fileModel, "<?php\n\n");
 
-    fputs($fileModel, "include \"../conf/Model.php\";\n\n");
-
-    fputs($fileModel, "class " . $modelNameCap . "Model extends Model\n");
+    fputs($fileModel, "class " . $modelNameCap . "Model\n");
     fputs($fileModel, "{\n");
 
     foreach($fields as $f)

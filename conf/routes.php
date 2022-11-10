@@ -76,7 +76,10 @@ if(!array_key_exists($_SERVER["REQUEST_URI"], $routes))
             $body = [];
 
             if(isset($_SESSION["query"]))
+            {
                 $query = $_SESSION["query"];
+                unset($_SESSION["query"]);
+            }
 
             if(isset($_POST))
                 $body = $_POST;
@@ -123,7 +126,10 @@ else
             $body = $_POST;
         
         if(isset($_SESSION["query"]))
+        {
             $query = $_SESSION["query"];
+            unset($_SESSION["query"]);
+        }
 
         $req = new Request($method, $query, $body);
 

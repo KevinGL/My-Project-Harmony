@@ -111,11 +111,14 @@ function createmodel($db)
         $res = $db->query($request);
 
         if($res)
+        {
+            createControllerModel($tablename, $columns);
             echo "Table " . $tablename . " has been created successfully :)";
+        }
         else
             echo "Sorry something was wrong :(";
 
-        echo "\nDo you want to create a other model ? (Y/N) : ";
+        echo "\nDo you want to create an other model ? (Y/N) : ";
         
         if(!yes_or_no())
             break;
@@ -160,4 +163,72 @@ function in_interval(&$value, $min, $max)
         else
             break;
     }
+}
+
+function createControllerModel($modelName, $fields)
+{
+    if(!file_exists("src/Controller") || !is_dir("src/Controller"))
+    {
+        mkdir("src/Controller");
+    }
+    
+    if(!file_exists("src/Model") || !is_dir("src/Model"))
+    {
+        mkdir("src/Model");
+    }
+
+    $modelNameCap = ucfirst(strtolower($modelName));
+
+    if($modelNameCap[strlen($modelNameCap)-1] == "s")
+    {
+        $modelNameCap = rtrim($modelNameCap, "s");
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $fileController = fopen("src/Controller/" . $modelNameCap . "Controller.php", "a+");
+
+    fputs($fileController, "<?php\n\n");
+
+    fputs($fileController, "include \"../conf/Controller.php\";\n\n");
+    
+    fputs($fileController, "class " . $modelNameCap . "Controller extends Controller\n");
+    fputs($fileController, "{\n");
+
+    fputs($fileController, "    public function index()\n");
+    fputs($fileController, "    {\n");
+    fputs($fileController, "        return(\"Welcome in Harmony ! :)\");\n");
+    fputs($fileController, "    }\n");
+
+    fputs($fileController, "};\n");
+
+    fclose($fileController);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $fileModel = fopen("src/Model/" . $modelNameCap . "Model.php", "a+");
+
+    fputs($fileModel, "<?php\n\n");
+
+    fputs($fileModel, "include \"../conf/Model.php\";\n\n");
+
+    fputs($fileModel, "class " . $modelNameCap . "Model extends Model\n");
+    fputs($fileModel, "{\n");
+
+    foreach($fields as $f)
+    {
+        fputs($fileModel, "    private $" . strtolower($f["name"]) .";\n\n");
+    }
+
+    foreach($fields as $f)
+    {
+        fputs($fileModel, "    public function get" . ucfirst(strtolower($f["name"])) ."()\n");
+        fputs($fileModel, "    {\n");
+        fputs($fileModel, "        return \$this->" . strtolower($f["name"]) . ";\n");
+        fputs($fileModel, "    }\n\n");
+    }
+
+    fputs($fileModel, "};\n");
+
+    fclose($fileModel);
 }

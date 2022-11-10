@@ -20,7 +20,7 @@ class UserController extends Controller
             "name" => $req->body["name"],
             "email" => $req->body["email"],
             "description" => $req->body["description"],
-            "admin" => $req->body["admin"]
+            "admin" => $req->body["admin"] == "admin" ? 1 : 0
         ]);
 
         if($res)

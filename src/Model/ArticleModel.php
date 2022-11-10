@@ -2,39 +2,29 @@
 
 require("bin/bdd.php");
 
-class UserModel
+class ArticleModel
 {
     private $db;
 
     public function __construct()
     {
         $this->db = connectDB();
-        
-        //var_dump($this->db);
     }
 
     public function create($row)
     {
-        $query = "INSERT INTO users (name, email, description, admin) VALUES (:name, :email, :description, :admin)";
+        $query = "INSERT INTO articles (name, content) VALUES (:name, :content)";
 
         $sth = $this->db->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
 
         $res = $sth->execute([
             ":name" => $row["name"],
-            ":email" => $row["email"],
-            ":description" => $row["description"],
-            ":admin" => $row["admin"]
+            ":content" => $row["content"]
         ]);
 
         if($res == true)
             return "success";
         else
             return "fail";
-
-        /*$query = $this->db->query('SELECT * FROM users');
-	
-	    $res = $query->fetchAll();
-
-        var_dump($res);*/
     }
 };

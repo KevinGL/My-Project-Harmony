@@ -211,22 +211,71 @@ function createControllerModel($modelName, $fields)
 
     fputs($fileModel, "<?php\n\n");
 
+    fputs($fileModel, "require(\"bin/bdd.php\");\n\n");
+
     fputs($fileModel, "class " . $modelNameCap . "Model\n");
     fputs($fileModel, "{\n");
 
-    foreach($fields as $f)
-    {
-        fputs($fileModel, "    private $" . strtolower($f["name"]) .";\n\n");
-    }
+    fputs($fileModel, "    private \$db;\n\n");
+    
+    fputs($fileModel, "    public function __construct()\n");
+    fputs($fileModel, "    {\n");
+    fputs($fileModel, "        \$this->db = connectDB();\n");
+    fputs($fileModel, "    }\n\n");
+    
+    fputs($fileModel, "    public function create(\$row)\n");
+    fputs($fileModel, "    {\n");
+        
+        fputs($fileModel, "        \$query = \"INSERT INTO " . $modelName . " (");
 
-    foreach($fields as $f)
-    {
-        fputs($fileModel, "    public function get" . ucfirst(strtolower($f["name"])) ."()\n");
-        fputs($fileModel, "    {\n");
-        fputs($fileModel, "        return \$this->" . strtolower($f["name"]) . ";\n");
-        fputs($fileModel, "    }\n\n");
-    }
+        $i=0;
+        foreach($fields as $f)
+        {
+            fputs($fileModel, $f["name"]);
 
+            if($i < count($fields)-1)
+                fputs($fileModel, ", ");
+            else
+                fputs($fileModel, ") VALUES (");
+
+            $i++;
+        }
+
+        $i=0;
+        foreach($fields as $f)
+        {
+            fputs($fileModel, ":" . $f["name"]);
+
+            if($i < count($fields)-1)
+                fputs($fileModel, ", ");
+            else
+                fputs($fileModel, ")\";\n\n");
+
+            $i++;
+        }
+
+        fputs($fileModel, "        \$sth = \$this->db->prepare(\$query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);\n\n");
+        
+        fputs($fileModel, "        \$res = \$sth->execute([\n");
+
+        $i=0;
+        foreach($fields as $f)
+        {
+            if($i < count($fields)-1)
+                fputs($fileModel, "            \":" . $f["name"] . "\" => \$row[\"" . $f["name"] . "\"],\n");
+            else
+                fputs($fileModel, "            \":" . $f["name"] . "\" => \$row[\"" . $f["name"] . "\"]\n        ]);\n\n");
+
+            $i++;
+        }
+
+        fputs($fileModel, "        if(\$res == true)\n");
+        fputs($fileModel, "            return \"success\";\n");
+        fputs($fileModel, "        else\n");
+        fputs($fileModel, "            return \"fail\";\n");
+    
+    fputs($fileModel, "    }\n");
+    
     fputs($fileModel, "};\n");
 
     fclose($fileModel);

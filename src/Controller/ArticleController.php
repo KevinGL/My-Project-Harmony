@@ -1,21 +1,19 @@
 <?php
 
 include "./conf/Controller.php";
-include "./src/Model/ArticleModel.php";
+include "./src/Entity/ArticleEntity.php";
 
 class ArticleController extends Controller
 {
     public function index()
     {
-        $article = new ArticleModel;
-
-        $res = $article->create([
-            "name" => "test",
-            "content" => "super article"
-        ]);
-
-        //var_dump($res);
-        
         return("Welcome in Harmony ! :)");
+    }
+
+    public function delete()
+    {
+        $entity = new ArticleEntity;
+
+        $entity->delete(1);
     }
 };
